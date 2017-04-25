@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-f = open("generated-sam-file.bam", 'w')
+f = open("generated-sam-file.sam", 'w')
 f.write("@RG\tID:TestReadGroup0\tSM:TestSample0\tPL:ILLUMINA\tLB:TestLibrary0\tPU:TestReadGroup0\n")
 
 if len(sys.argv) < 4:
@@ -26,6 +26,7 @@ nucl = {0:'A',1:'C',2:'G',3:'T'}
 read = ""
 flagint = 0
 qint = 0
+lines = []
 
 for i in range(lines_number):
 	line = []
@@ -51,17 +52,31 @@ for i in range(lines_number):
 	line.append("chr1")
 	line.append(700)
 	line.append(0)
-	line.append("*")
+	line.append(str(N)+'M')
 	line.append("=")
 	line.append(700)
 	line.append(qint)
 	line.append(read)
 	line.append("*")
+	line.append("RG:Z:TestReadGroup0")
 
+	line_str = ""
 	for x in line:
-		f.write(str(x))
-		f.write('\t')
+		line_str += str(x) + '\t';
+		#f.write(str(x))
+		#f.write('\t')
+	lines.append(line_str)
 
+	#f.write('\n')
+
+while len(lines) > 0:
+	r_n = np.random.randint(0, len(lines))
+	f.write(lines[r_n])
 	f.write('\n')
+	lines.pop(r_n)
+
+#for x in lines:
+#	f.write(x)
+#	f.write('\n')
 
 f.close()
